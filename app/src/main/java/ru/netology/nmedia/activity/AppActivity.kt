@@ -104,26 +104,22 @@ class AppActivity : AppCompatActivity() {
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean =
                 when (menuItem.itemId) {
                     R.id.signin -> {
-                        // TODO: just hardcode it, implementation must be in homework
                         auth.setAuth(5, "x-token")
                         true
                     }
 
                     R.id.signup -> {
-                        // TODO: just hardcode it, implementation must be in homework
                         auth.setAuth(5, "x-token")
                         true
                     }
 
                     R.id.signout -> {
-                        // TODO: just hardcode it, implementation must be in homework
                         auth.removeAuth()
                         true
                     }
 
                     else -> false
                 }
-
         })
     }
 
