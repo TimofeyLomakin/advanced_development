@@ -1,20 +1,19 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
-apply plugin: 'com.google.devtools.ksp' // вместо устаревшего 'kotlin-kapt'
+apply plugin: 'com.google.devtools.ksp'
 apply plugin: 'com.google.gms.google-services'
 apply plugin: 'dagger.hilt.android.plugin'
 
 android {
     namespace = "ru.netology.nmedia"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "ru.netology.nmedia"
-        minSdk = 26
-        targetSdk = 35
+        minSdk = 23
+        targetSdk = 36
         versionCode = 1
         versionName = "1.0"
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     compileOptions {
@@ -46,7 +45,7 @@ android {
 }
 
 dependencies {
-    def core_version = "1.16.0"
+    def core_version = "1.17.0"
     def appcompat_version = "1.7.1"
     def constraintlayout_version = "2.2.1"
     def swiperefreshlayout_version = "1.1.0"
@@ -57,13 +56,14 @@ dependencies {
     def mdc_version = "1.12.0"
     def nav_version = "2.9.3"
     def room_version = "2.7.2"
-    def firebase_version = "32.8.0"
+    def firebase_version = "34.1.0"
     def glide_version = "4.16.0"
     def retrofit_version = "3.0.0"
     def retrofitgson_version = "3.0.0"
     def okhttplogging_version = "5.1.0"
     def coroutines_version = "1.10.2"
     def imagepicker_version = "2.1"
+    def paging_version = "3.3.6"
     def play_services_base_version = "18.7.2"
     def core_desugaring_version = "2.1.5"
 
@@ -84,8 +84,9 @@ dependencies {
     implementation "androidx.room:room-runtime:$room_version"
     ksp "androidx.room:room-compiler:$room_version"
     implementation "androidx.room:room-ktx:$room_version"
+    implementation "androidx.room:room-paging:$room_version"
     implementation platform("com.google.firebase:firebase-bom:$firebase_version")
-    implementation "com.google.firebase:firebase-messaging-ktx"
+    implementation "com.google.firebase:firebase-messaging"
     implementation "com.google.android.gms:play-services-base:$play_services_base_version"
     implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
     implementation "com.squareup.retrofit2:converter-gson:$retrofitgson_version"
@@ -97,5 +98,6 @@ dependencies {
     implementation "com.github.dhaval2404:imagepicker:$imagepicker_version"
     implementation "com.google.dagger:hilt-android:$hilt_version"
     ksp "com.google.dagger:hilt-compiler:$hilt_version"
+    implementation "androidx.paging:paging-runtime-ktx:$paging_version"
     coreLibraryDesugaring "com.android.tools:desugar_jdk_libs:$core_desugaring_version"
 }

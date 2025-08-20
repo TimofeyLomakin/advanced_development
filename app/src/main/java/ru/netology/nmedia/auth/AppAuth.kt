@@ -1,5 +1,4 @@
 package ru.netology.nmedia.auth
-
 import android.content.Context
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.messaging.ktx.messaging
