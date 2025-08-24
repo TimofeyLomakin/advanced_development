@@ -10,5 +10,5 @@ import ru.netology.nmedia.entity.PostRemoteKeyEntity
 @Database(entities = [PostEntity::class, PostRemoteKeyEntity::class], version = 1, exportSchema = false)
 abstract class AppDb : RoomDatabase() {
     abstract fun postDao(): PostDao
-    abstract fun postRemoteKeyDao(): PostRemoteKeyEntity
+    abstract fun postRemoteKeyDao(): PostRemoteKeyDao
 }

@@ -44,10 +44,10 @@ class PostViewModel @Inject constructor(
     val data: Flow<PagingData<Post>> = auth.authStateFlow
         .flatMapLatest { (myId, _) ->
             repository.data
-                .map { posts ->
-
-                        posts.map { it.copy(ownedByMe = it.authorId == myId) }
-
+                .map { pagingData ->
+                    pagingData.map { post ->
+                        post.copy(ownedByMe = post.authorId == myId)
+                    }
                 }
         }.flowOn(Dispatchers.Default)
 
