@@ -23,12 +23,16 @@ class PostRemoteMediator(
     private val appDb: AppDb
 ) : RemoteMediator<Int, PostEntity>() {
 
-    override suspend fun load(loadType: LoadType, state: PagingState<Int, PostEntity>): MediatorResult {
+    override suspend fun load(
+        loadType: LoadType,
+        state: PagingState<Int, PostEntity>
+    ): MediatorResult {
         return try {
             when (loadType) {
                 LoadType.PREPEND -> {
                     MediatorResult.Success(endOfPaginationReached = true)
                 }
+
                 LoadType.REFRESH -> {
                     val lastId = postDao.getLatestPost()?.id
                     val response = if (lastId == null) {
@@ -38,7 +42,8 @@ class PostRemoteMediator(
                     }
 
                     if (!response.isSuccessful) throw ApiError(response.code(), response.message())
-                    val body = response.body() ?: throw ApiError(response.code(), response.message())
+                    val body =
+                        response.body() ?: throw ApiError(response.code(), response.message())
 
                     appDb.withTransaction {
                         if (body.isNotEmpty()) {
@@ -46,10 +51,20 @@ class PostRemoteMediator(
                             val existingKeys = postRemoteKeyDao.getKeys()
                             val newKeys = mutableListOf<PostRemoteKeyEntity>().apply {
                                 if (existingKeys.none { it.type == PostRemoteKeyEntity.KeyType.AFTER }) {
-                                    add(PostRemoteKeyEntity(PostRemoteKeyEntity.KeyType.AFTER, newFirstId!!))
+                                    add(
+                                        PostRemoteKeyEntity(
+                                            PostRemoteKeyEntity.KeyType.AFTER,
+                                            newFirstId!!
+                                        )
+                                    )
                                 }
                                 if (existingKeys.none { it.type == PostRemoteKeyEntity.KeyType.BEFORE }) {
-                                    add(PostRemoteKeyEntity(PostRemoteKeyEntity.KeyType.BEFORE, body.minByOrNull { it.id }?.id!!))
+                                    add(
+                                        PostRemoteKeyEntity(
+                                            PostRemoteKeyEntity.KeyType.BEFORE,
+                                            body.minByOrNull { it.id }?.id!!
+                                        )
+                                    )
                                 }
                             }
                             postRemoteKeyDao.insert(newKeys)
@@ -58,17 +73,23 @@ class PostRemoteMediator(
                     }
                     MediatorResult.Success(endOfPaginationReached = body.isEmpty())
                 }
+
                 LoadType.APPEND -> {
-                    val earliestId = postRemoteKeyDao.getKey(PostRemoteKeyEntity.KeyType.BEFORE)?.key
-                        ?: return MediatorResult.Success(false)
+                    val earliestId =
+                        postRemoteKeyDao.getKey(PostRemoteKeyEntity.KeyType.BEFORE)?.key
+                            ?: return MediatorResult.Success(false)
                     val response = apiService.getBefore(earliestId, state.config.pageSize)
                     if (!response.isSuccessful) throw ApiError(response.code(), response.message())
-                    val body = response.body() ?: throw ApiError(response.code(), response.message())
+                    val body =
+                        response.body() ?: throw ApiError(response.code(), response.message())
 
                     appDb.withTransaction {
                         if (body.isNotEmpty()) {
                             postRemoteKeyDao.insert(
-                                PostRemoteKeyEntity(PostRemoteKeyEntity.KeyType.BEFORE, body.minByOrNull { it.id }?.id!!)
+                                PostRemoteKeyEntity(
+                                    PostRemoteKeyEntity.KeyType.BEFORE,
+                                    body.minByOrNull { it.id }?.id!!
+                                )
                             )
                             postDao.insert(body.map(PostEntity::fromDto))
                         }

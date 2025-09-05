@@ -56,6 +56,7 @@ class NewPostFragment : Fragment() {
                             Snackbar.LENGTH_LONG
                         ).show()
                     }
+
                     Activity.RESULT_OK -> viewModel.changePhoto(it.data?.data)
                 }
             }
@@ -115,6 +116,7 @@ class NewPostFragment : Fragment() {
                         }
                         true
                     }
+
                     else -> false
                 }
 

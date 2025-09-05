@@ -5,6 +5,7 @@ import androidx.paging.ExperimentalPagingApi
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
+import androidx.paging.insertSeparators
 import androidx.paging.map
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -26,6 +27,7 @@ import ru.netology.nmedia.error.UnknownError
 import java.io.IOException
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlin.random.Random
 
 @Singleton
 class PostRepositoryImpl @Inject constructor(
@@ -35,9 +37,9 @@ class PostRepositoryImpl @Inject constructor(
     appDb: AppDb
 ) : PostRepository {
     @OptIn(ExperimentalPagingApi::class)
-    override val data: Flow<PagingData<Post>> = Pager(
-        config = PagingConfig(pageSize = 5, enablePlaceholders = false,  initialLoadSize = 5),
-        pagingSourceFactory = {postDao.getPagingSource()},
+    override val data: Flow<PagingData<FeedItem>> = Pager(
+        config = PagingConfig(pageSize = 5, enablePlaceholders = false, initialLoadSize = 5),
+        pagingSourceFactory = { postDao.getPagingSource() },
         remoteMediator = PostRemoteMediator(
             apiService = apiService,
             postDao = postDao,
@@ -47,6 +49,13 @@ class PostRepositoryImpl @Inject constructor(
     ).flow
         .map {
             it.map(PostEntity::toDto)
+                .insertSeparators { previous, _ ->
+                    if (previous?.id?.rem(5) == 0L) {
+                        Ad(Random.nextLong(), "figma.jpg")
+                    } else {
+                        null
+                    }
+                }
         }
 
     override suspend fun getAll() {

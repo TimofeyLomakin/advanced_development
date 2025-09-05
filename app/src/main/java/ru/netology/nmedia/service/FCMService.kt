@@ -17,6 +17,7 @@ class FCMService : FirebaseMessagingService() {
     private val content = "content"
     private val channelId = "remote"
     private val gson = Gson()
+
     @Inject
     lateinit var auth: AppAuth
 
